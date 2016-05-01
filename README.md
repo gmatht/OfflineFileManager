@@ -1,7 +1,9 @@
-Offline File Manager
+Offline File Manager v0.01
 =======
 
 Most file managers assume relevant files are presently accessible. This utility instead stores file info in `/var/lib/ofm`. This allows us to find files and generate stats on disconnected drives.
+
+To install just add `ofm` to your path. E.g. link it to `/usr/bin/`.
 
 Example of Use:
 
@@ -13,9 +15,32 @@ Example of Use:
 6. run `ofm grep .vimrc` to look for your vimrc files
 7. run `ofm sim` to see which drives have similar contents
 8. run `ofm df` to see how much free space each device has
-9. run `ofm fail foo bar` to see files lost if drives foo and bar fail
+9. run `ofm fail foo bar` to see files lost if drives `foo` and `bar` fail
 
 Please be patient. Queries on 10 million files take a couple of minutes to complete.
+
+## Data Structures
+
+`/var/lib/ofm/ID_SERIAL`: Directory containing information on disk with `ID_SERIAL` (as reported by udevadm)` 
+This directory contains `smartctl.txt` and `udevadm.disk.txt`, which are raw output from the respective utilities.
+
+`/var/lib/ofm/ID_SERIAL/N`: Directory containing information on Nth partition on disk
+This directory contains three files `df.txt`, `du.gz` and `udevadm.part.txt`. A couple of lines in `du.gz` may look like:
+
+    9999	1283157068	/media/path/to/file.pdf
+    9999b2	1283157068      ./path/to/file.jpg
+    
+- `9999`:   File is 9999 bytes long
+- `9999b2`: Sparse file is 9999 bytes long, but only uses 2 512 byte (b)locks.
+- `1283157068`: A Unix Modification Time (in the year 2010)
+
+## TODO
+
+ - Investigate more efficient data-structures / cache structures
+ - Support tagging sets of files
+ - Support importing unique files from decommissioned drives
+   -  Support importing files with only N backups
+ - Support recording and operating on md5/sha256 sums etc.
 
 ## Background
 I have many different disks (primarily harddisks) storing various files. I want to know that they are all backed up in some form. Given that I have terabytes of files somehow (backups of backups apparently) I don't want to just backup everything onto new media yet again.  I'd like a utility that allows me to copy all files on X that do not yet exist on Y to Y, that is also well suited to tasks such as:
@@ -47,10 +72,6 @@ Find out what files would be lost if LHAA1102241905581561 failed
 
 find partitions that don't have du.gz's
 
-## TODO
-
-Update parse_du to new parse_du.pl
-
 ## Other programs
 
 ### rsync
@@ -81,5 +102,3 @@ However they seem to be all limited in two ways:
 Unlike the other utilities [archivefs](https://code.google.com/p/archivefs/) not only keeps a record of hashes, but also keep that record up-to-date. 
 
 This is handy. It is designed primarily for deduplication rather than file management. It is not completely trivial to e.g. compare two archivefs filesystems.
-
-
