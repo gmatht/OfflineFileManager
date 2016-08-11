@@ -19,6 +19,8 @@ Example of Use:
 
 Please be patient. Queries on 10 million files take a couple of minutes to complete.
 
+NEWS: 2016-08-12 Apparently Randall Munroe shares my old ["Backup Strategy"](http://xkcd.com/1718/). Alas my backups have caught up with Moores law and that is why I had to write OffileFileManager.
+
 ## Data Structures
 
 `/var/lib/ofm/ID_SERIAL`: Directory containing information on disk with `ID_SERIAL` (as reported by udevadm)` 
